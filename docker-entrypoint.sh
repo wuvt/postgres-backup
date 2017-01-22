@@ -2,10 +2,21 @@
 export PGPASSWORD="$POSTGRES_PASSWORD"
 
 if [ "$1" = 'autodump' ]; then
-    #exec pg_dumpall -h postgres -U postgres -f "/data/$(date +%Y%m%d).sql"
-    pg_dump -h postgres -U postgres -d jira -f "/data/jira_$(date +%Y%m%d).sql"
-    pg_dump -h postgres -U postgres -d wuvt -f "/data/wuvt_$(date +%Y%m%d).sql"
-    pg_dump -h postgres -U postgres -d wuvtam -f "/data/wuvtam_$(date +%Y%m%d).sql"
+    if [ -n "$DATABASES" ]; then
+        for db in $DATABASES; do
+            dest="/data/${db}_$(date +%Y%m%d).sql"
+            pg_dump -h "$POSTGRES_SERVER" -U postgres -d $db -f "$dest"
+            if [ -n "$SFTP_DEST" ]; then
+                echo "put \"$dest\"" | sftp -b - -i /etc/sshkeys/backup "$SFTP_DEST"
+            fi
+        done
+    else
+        dest="/data/$(date +%Y%m%d).sql"
+        exec pg_dumpall -h "$POSTGRES_SERVER" -U postgres -f "$dest"
+        if [ -n "$SFTP_DEST" ]; then
+            echo "put \"$dest\"" | sftp -b - -i /etc/sshkeys/backup "$SFTP_DEST"
+        fi
+    fi
 else
     exec "$@"
 fi
