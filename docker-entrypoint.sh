@@ -7,14 +7,18 @@ if [ "$1" = 'autodump' ]; then
             dest="/data/${db}_$(date +%Y%m%d).sql"
             pg_dump -h "$POSTGRES_SERVER" -U postgres -d $db -f "$dest"
             if [ -n "$SFTP_DEST" ]; then
-                echo "put \"$dest\"" | sftp -b - -i /etc/sshkeys/backup "$SFTP_DEST"
+                echo "put \"$dest\"" | sftp -b - \
+                    -o UserKnownHostsFile=/etc/sshkeys/known_hosts \
+                    -i /etc/sshkeys/backup "$SFTP_DEST"
             fi
         done
     else
         dest="/data/$(date +%Y%m%d).sql"
         exec pg_dumpall -h "$POSTGRES_SERVER" -U postgres -f "$dest"
         if [ -n "$SFTP_DEST" ]; then
-            echo "put \"$dest\"" | sftp -b - -i /etc/sshkeys/backup "$SFTP_DEST"
+            echo "put \"$dest\"" | sftp -b - \
+                -o UserKnownHostsFile=/etc/sshkeys/known_hosts \
+                -i /etc/sshkeys/backup "$SFTP_DEST"
         fi
     fi
 else
