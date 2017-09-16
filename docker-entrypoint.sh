@@ -10,6 +10,7 @@ if [ "$1" = 'autodump' ]; then
                 echo "put \"$dest\"" | sftp -b - \
                     -o UserKnownHostsFile=/etc/sshkeys/known_hosts \
                     -i /etc/sshkeys/backup "$SFTP_DEST"
+                rm -f "$dest"
             fi
         done
     else
@@ -19,6 +20,7 @@ if [ "$1" = 'autodump' ]; then
             echo "put \"$dest\"" | sftp -b - \
                 -o UserKnownHostsFile=/etc/sshkeys/known_hosts \
                 -i /etc/sshkeys/backup "$SFTP_DEST"
+            rm -f "$dest"
         fi
     fi
 else
