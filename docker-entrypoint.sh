@@ -26,3 +26,7 @@ if [ "$1" = 'autodump' ]; then
 else
     exec "$@"
 fi
+
+if [[ -n "$HEALTHCHECK_WEBHOOK" ]]; then
+    curl -fsS --retry 3 "$HEALTHCHECK_WEBHOOK" > /dev/null
+fi
