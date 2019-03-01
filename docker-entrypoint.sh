@@ -28,5 +28,5 @@ else
 fi
 
 if [[ -n "$HEALTHCHECK_WEBHOOK" ]]; then
-    curl -fsS --retry 3 "$HEALTHCHECK_WEBHOOK" > /dev/null
+    curl -fsS --retry 3 $HEALTHCHECK_WEBHOOK > /dev/null
 fi
