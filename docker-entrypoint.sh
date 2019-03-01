@@ -15,7 +15,7 @@ if [ "$1" = 'autodump' ]; then
         done
     else
         dest="/data/$(date +%Y%m%d).sql"
-        exec pg_dumpall -h "$POSTGRES_SERVER" -U postgres -f "$dest"
+        pg_dumpall -h "$POSTGRES_SERVER" -U postgres -f "$dest"
         if [ -n "$SFTP_DEST" ]; then
             echo "put \"$dest\"" | sftp -b - \
                 -o UserKnownHostsFile=/etc/sshkeys/known_hosts \
