@@ -1,4 +1,4 @@
-name: Build Docker image and push to GitHub Package Registry
+name: Build and push Docker image
 on: [push]
 
 jobs:
@@ -6,10 +6,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Publish to GitHub Package Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v1
       with:
-        name: wuvt/postgres-backup/postgres-backup
+        repository: wuvt/postgres-backup
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tag_with_ref: true
+        add_git_labels: true
+    - name: Build and push Docker image to GitHub Package Registry
+      uses: docker/build-push-action@v1
+      with:
+        repository: wuvt/postgres-backup/postgres-backup
         username: wuvt
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
+        tag_with_ref: true
+        add_git_labels: true
