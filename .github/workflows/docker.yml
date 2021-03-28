@@ -17,9 +17,9 @@ jobs:
     - name: Build and push Docker image to GitHub Package Registry
       uses: docker/build-push-action@v1
       with:
-        repository: wuvt/postgres-backup/postgres-backup
+        repository: wuvt/postgres-backup
         username: wuvt
         password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
+        registry: ghcr.io
         tag_with_ref: true
         add_git_labels: true
